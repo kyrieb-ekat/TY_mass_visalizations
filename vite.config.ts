@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/thomas_mass_visualizations/', 
+  base: '/TY_mass_visalizations/', 
 })
