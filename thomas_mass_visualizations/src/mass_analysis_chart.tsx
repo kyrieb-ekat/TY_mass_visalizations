@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import type { TooltipProps } from 'recharts';
+
 
 const MassAnalysisChart = () => {
   const [chartType, setChartType] = useState('line');
@@ -104,7 +104,20 @@ const MassAnalysisChart = () => {
     }
   ];
 
-  const colors = {
+  const lineKeys = [
+    'Richafort % Complete',
+    'Richafort % Dense',
+    'Prioris % Complete',
+    'Prioris % Dense',
+    'Brumel % Complete',
+    'Brumel % Dense',
+    'Fevin % Complete',
+    'Fevin % Dense'
+  ] as const;
+
+  type LineKey = typeof lineKeys[number];
+
+  const colors: Record<LineKey, string> = {
     'Richafort % Complete': '#8884d8',
     'Richafort % Dense': '#82ca9d',
     'Prioris % Complete': '#ffc658',
@@ -116,18 +129,28 @@ const MassAnalysisChart = () => {
   };
 
   const getFilteredData = () => {
-    return data.filter(item => visibleSections[item.section]);
+    return data.filter(item => visibleSections[item.section as keyof typeof visibleSections]);
   };
 
-  const toggleSection = (section) => {
-    setVisibleSections(prev => ({
+  type VisibleSections = {
+    Introit: boolean;
+    Kyrie: boolean;
+    Gradual: boolean;
+    Offertory: boolean;
+    Sanctus: boolean;
+    'Agnus Dei': boolean;
+    Communion: boolean;
+  };
+
+  const toggleSection = (section: keyof VisibleSections) => {
+    setVisibleSections((prev) => ({
       ...prev,
       [section]: !prev[section]
     }));
   };
 
-  const getVisibleLines = (): string[] => {
-    const lines: string[] = [];
+  const getVisibleLines = (): LineKey[] => {
+    const lines: LineKey[] = [];
     if (showComplete) {
       lines.push('Richafort % Complete', 'Prioris % Complete', 'Brumel % Complete', 'Fevin % Complete');
     }
@@ -211,9 +234,9 @@ const MassAnalysisChart = () => {
             {Object.keys(visibleSections).map((section) => (
               <button
                 key={section}
-                onClick={() => toggleSection(section)}
+                onClick={() => toggleSection(section as keyof VisibleSections)}
                 className={`px-3 py-1 rounded text-sm ${
-                  visibleSections[section] 
+                  visibleSections[section as keyof VisibleSections] 
                     ? 'bg-green-500 text-white' 
                     : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                 }`}
