@@ -355,11 +355,11 @@ const MassAnalysisChart = () => {
     // Group composers and their Completeness/Density pairs
     const composers = ['Richafort', 'Prioris', 'Brumel', 'Fevin'];
     const groupedData = composers.map(composer => {
-      const completeness = props.payload.find(item => 
-        item.value.includes(composer) && item.value.includes('Completeness')
+      const completeness = props.payload?.find(item => 
+        item.value && typeof item.value === 'string' && item.value.includes(composer) && item.value.includes('Completeness')
       );
-      const density = props.payload.find(item => 
-        item.value.includes(composer) && item.value.includes('Density')
+      const density = props.payload?.find(item => 
+        item.value && typeof item.value === 'string' && item.value.includes(composer) && item.value.includes('Density')
       );
       return { composer, completeness, density };
     }).filter(group => group.completeness || group.density);
